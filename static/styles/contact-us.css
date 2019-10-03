@@ -1,0 +1,71 @@
+.left-col, .comment-box{
+    display: block;
+    float: left;
+    margin: 1rem 3rem 1rem 20rem;
+}
+
+.right-col {
+    display: block;
+    float:left;
+    margin: 1rem 20rem 1rem 3rem;
+}
+
+input[type=text]{
+    width: 360px;
+    padding: 10px 20px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-family: inherit;
+  }
+
+textarea {
+      display: block;
+      float: inline-start;
+      width: 360px;
+      height: 120px;
+      font-size: 16px;
+      font-family: inherit;
+  }
+
+  label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  input[type=submit] {
+    width: 360px;
+    padding: 12px 20px;
+    margin: 4rem 20rem 1rem 3rem;
+    background-color: #00356B;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    float: left;
+  }
+
+  input[type=submit]:hover {
+    background-color: royalblue;
+  }
+
+  .text-bottom {
+      display: block;
+      float: left;
+      margin: 1rem 18rem 4rem 18rem;
+      color: gray;
+      font-size: 12px;
+      line-height: 1;
+  }
+
+  .text-bottom p {
+      margin: 15px;
+  }
+
+  
+  

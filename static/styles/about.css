@@ -1,0 +1,24 @@
+/*about, EULA, FAQ, features table,*/
+
+h1, h2, p {
+    margin: 2rem 20rem;
+}
+
+h1 {
+    font-size: 23px;
+    margin-top:3rem;
+    margin-bottom: 2.5rem;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: normal;
+}
+
+p {
+    font-size: 16px;
+}
+
+.faq {
+    margin: 2rem 23rem;
+}

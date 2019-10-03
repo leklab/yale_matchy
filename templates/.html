@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  
+  <head>
+    <meta charset="utf-8">
+    <title>Diagnosis Search</title>
+    <link href="../static/styles/home-style.css" rel="stylesheet">
+    <link href="../static/styles/tab.css" rel="stylesheet">
+    <link href="../static/styles/submission.css" rel="stylesheet">
+    <script src="../static/scripts/main.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+    <script src="../static/scripts/autocomplete.js" async></script>
+
+  </head>
+
+  <body>
+    
+    <div id="no-footer">
+
+    <!--navigation bar-->
+    <div class="navbar">
+      <img src="../static/images/google2.jpg" alt="logo">
+      <div class="dropdown">
+        <button class="dropbtn">Home
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+            <a href="/home">Submissions</a>
+            <a href="/gene-search">Gene Search</a>
+            <a href="/diagnosis-search">Diagnosis Search</a>
+            <a href="/reports">Reports</a>
+            <a href="/match-outcome">Match Outcomes</a>
+        </div>
+      </div> 
+      <a href="/about">About</a>
+      <a href="/publications">Publications</a>
+      <a href="/statistics">Statistics</a>
+      <a href="/contact-us">Contact Us</a>
+      <div class="dropdown">
+        <button class="dropbtn">Help
+          <i class="fa fa-caret-down"></i>
+        </button>
+          <div class="dropdown-content">
+              <a href="/help/eula">EULA</a>
+              <a href="/help/faq">FAQ</a>
+              <a href="/help/submission-help">Submission Help</a>
+              <a href="/help/features-table">Features Table</a>
+              <a href="/help/genematcher-api">GeneMatcher API</a>
+              <a href="/help/mme-api">MatchMaker Exchange API</a>
+              <a href="/help/external-data-sources">External Data Sources</a>
+          </div>
+        </div> 
+        <div class="nav-right">
+            <a href="/account">My Account</a>
+            <a href="#">Log Out</a>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Submissions')">Submissions</button>
+        <button class="tablinks" onclick="openTab(event, 'Gene-Search')">Gene Search</button>
+        <button class="tablinks active" onclick="openTab(event, 'Diagnosis-Search')">Diagnosis Search</button>
+        <button class="tablinks" onclick="openTab(event, 'Reports')">Reports</button>
+        <button class="tablinks" onclick="openTab(event, 'Match-Outcomes')">Match Outcomes</button>
+      </div>
+        
+      <!-- Tab content -->
+      <div id="Submissions" class="tabcontent">
+          <h1>Quick Search</h1>
+          <form action="/submission/result" method="POST"> 
+            <input type="text" id="identifier" name="identifier" placeholder="Identifier...">
+            <input type="submit" value="Search">
+          </form>
+          <h1>Submissions</h1>
+          <ul>
+            <li><a href="#">Create a new submission</a></li>
+            <li>List my active submissions</li>
+            <li>List my suspended submissions</li>
+            <li>List all my submissions</li>
+          </ul>
+      </div>
+        
+      <div id="Gene-Search" class="tabcontent">
+        <h1>Gene Search</h>
+        <p></p>
+        <form action="/gene-search/result" method="POST">
+            <label for="gene-symbol">Gene symbol:</label>
+            <input type="text" id="gene-symbol" name="gene-symbol">
+            <label class='checkbox-label'><input type="checkbox" name="sym-match" value="sym-match-checked">Submissions must match all gene symbols</label>
+            <input type="hidden" name="sym-match" value="sym-match-unchecked">
+            <br>
+            <br>
+  
+            <label for="genecoor">Genomic coordinate:</label>
+            <input type="text" id="genecoor" name="genecoor">
+            <label class='checkbox-label'><input type="checkbox" name="coor-match" value="coor-match-checked">Submissions must match all genomic coordinates</label>
+            <input type="hidden" name="coor-match" value="coor-match-unchecked">
+          <br>
+          <br>
+
+          <label for="assembly">Assembly:</label>
+          <select id="assembly" name="assembly">
+            <option value="GRCh38">GRCh38</option>
+            <option value="GRCh377">GRCh377</option>
+            <option value="NCBI36">NCBI36</option>
+          </select>
+
+          <input type="submit" value="Search">
+        </form>
+      </div>
+        
+      <div id="Diagnosis-Search" class="tabcontent active">
+          <h1>Diagnosis Search</h>
+            <p></p>
+            <form action="/diagnosis-search/result" method="POST">
+              <label for="mim-number">MIM number:</label>
+              <input type="text" id="mim-number" name="mim-number">
+            
+              <label for="disorder-type">Disorder type:</label>
+              <select id="disorder-type" name="disorder-type">
+                <option value="optional">Select optional disorder type...</option>
+                <option value="Mendelian">A Mendelian disorder described in OMIM</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+
+              <label for="inheritance-pattern">Inheritance pattern:</label>
+              <select id="inheritance-pattern" name="inheritance-pattern">
+                <option value="optional">Select optional inheritance pattern...</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+    
+              <input type="submit" value="Search">
+            </form>
+      </div>
+
+      <div id="Reports" class="tabcontent">
+        <h1>Reports</h1>
+        <ul>
+          <li><a href="/reports/events">All events report</a></li>
+          <li><a href="/reports/events?eventType=1">Submission creation report</a></li>
+          <li><a href="/reports/events?eventType=2">Submission update Report</a></li>
+          <li><a href="/reports/events?eventType=3">Match report</a></li>
+        </ul>
+        <h1>MatchY Match Reports</h1>
+        <ul>
+            <li><a href="/reports/events?reportType=match&eventType=3">Match report</a></li>
+        </ul>
+        <h1>Matchmaker Exchange Match Reports</h1>
+        <ul>
+            <li><a href="/reports/events?reportType=mme&eventType=3">Match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=13">Australian Genomics Health Alliance match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=11">Broad Matchbox match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=6">DECIPER match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=15">IRUD Exchange match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=9">MyGene2 match report</a></li>
+            <li><a href="/reports/events?reportType=mme&eventType=3&matchMakerExchangeServerID=4">PhenomeCentral match report</a></li>
+        </ul>
+      </div>
+
+      <div id="Match-Outcomes" class="tabcontent">
+          <h1>MatchY Match Outcomes</h1>
+          <table>
+              <tr>
+                <th>Outcome Type</th>
+                <th>Outcome Type Count</th>
+              </tr>
+              <tr>
+                <td>Awaiting Reminder Notification</td>
+                <td></td>
+              </tr>
+              <tr>
+                  <td>Awaiting Outcome Report</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Phenotype Match</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Publication</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Partial Phenotype Match</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Different Inheritance Mode</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>False Positive Variant</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Variant Didn't Segregate</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Commonly Mutated Gene</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Same Patient</td>
+                  <td></td>
+              </tr>
+          </table>
+          <p><ul><li><a href="/reports/events?reportType=matchy&eventType=3">Update my MatchY match report</a></li></ul></p>
+          <br>
+          <h1>MatchMaker Exchange Match Outcomes</h1>
+          <table>
+              <tr>
+                <th>Outcome Type</th>
+                <th>Outcome Type Count</th>
+              </tr>
+              <tr>
+                <td>Awaiting Reminder Notification</td>
+                <td></td>
+              </tr>
+              <tr>
+                  <td>Awaiting Outcome Report</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Phenotype Match</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Publication</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Partial Phenotype Match</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Different Inheritance Mode</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>False Positive Variant</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Variant Didn't Segregate</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Commonly Mutated Gene</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>Same Patient</td>
+                  <td></td>
+              </tr>
+          </table>
+          <p><ul><li><a href="/reports/events?reportType=mme&eventType=3">Update my MatchMaker Exchange match report</a></li></ul></p>
+      </div>
+
+    </div>
+
+    <footer>
+      <p>MatchY insert footer</p>
+    </footer>
+
+
+    
+  </body>
+</html>

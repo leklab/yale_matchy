@@ -1,2 +1,1 @@
-# yale_matchy
-Yale MME Node
+# MatchY

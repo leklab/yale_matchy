@@ -1,0 +1,90 @@
+<<<<<<< HEAD
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    background-color: white;
+    margin: 2rem 25rem;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    border-bottom: 1px solid lightgray;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: darkblue;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    font-weight: 600;
+  }
+  
+  /* Create an active/current tablink class */
+  .tab button.active {
+    border: 1px solid lightgray;
+    border-bottom: none;
+    border-radius: 10%;
+    color: darkblue;
+    font-weight: 600;
+  }
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    margin: 0 25rem;
+  }
+
+  .tabcontent.active {
+      display: block;
+=======
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    background-color: white;
+    margin: 2rem 25rem;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    border-bottom: 1px solid lightgray;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: darkblue;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    font-weight: 600;
+  }
+  
+  /* Create an active/current tablink class */
+  .tab button.active {
+    border: 1px solid lightgray;
+    border-bottom: none;
+    border-radius: 10%;
+    color: darkblue;
+    font-weight: 600;
+  }
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    margin: 0 25rem;
+  }
+
+  .tabcontent.active {
+      display: block;
+>>>>>>> 62f8a435b7cefe3a15277dea784a9323c28c2531
+  }

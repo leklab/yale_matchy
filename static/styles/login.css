@@ -1,0 +1,53 @@
+#login {
+    margin: 0;
+    padding: 0;
+}
+
+#login h1{
+    margin: 0;
+    padding: 3% 25% 1% 25%;
+    font-weight: 600%;
+    font-size: 60px;
+}
+
+#login p{
+    margin: 0;
+    padding: 1% 25% 1% 25%;
+    color: dimgray;
+}
+
+#login-form {
+    padding: 1% 25% 3% 25%;
+    font-size: 18px;
+}
+
+
+#login-form input[type=text]{
+    width: 100%;
+    padding: 10px;
+    line-height: 22px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#login-form input[type=submit]{
+    width: 50%;
+    display: block;
+    float: right;
+    padding: 10px;
+    font: inherit;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #00356B;
+    color: white;
+}
+
+#login-form input[type=submit]:hover{
+    background-color: royalblue;
+    cursor: pointer;
+}

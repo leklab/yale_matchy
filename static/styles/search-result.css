@@ -1,0 +1,50 @@
+h2 {
+  margin: 1rem 20rem;
+  color: #00356B;
+  font-weight: 600;
+}
+
+.dot{
+  height: 10px;
+  width: 10px;
+  background-color: #00356B;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#search-result table, #submission-info table{
+  border: 2px solid #00356B30;
+  font-size: 16px;
+  margin: 1rem 20rem;
+}
+
+#search-result td, #submission-info td{
+  padding: 15px 10px;
+}
+
+#submission-info table{
+  background-color: #00356B18;
+  border: none;
+}
+
+#submission-info td{
+  border: 1px solid white;
+}
+
+#submission-info td:first-child{
+  width: 140px;
+  font-weight: 600;
+}
+
+#submission-info td:nth-child(2){
+  width: 150px;
+}
+
+#submission-info td:nth-child(3){
+  width: 300px;
+}
+
+#search-result tr:nth-child(odd){
+  background-color: #00356B30;
+}

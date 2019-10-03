@@ -1,0 +1,190 @@
+/* 
+  Style the tab and tablinks (checkboxes)
+*/
+
+.tab {
+  float: left;
+  display: block;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 13%;
+  margin: 3rem 0 3rem 22rem;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.tab input[type=checkbox] {
+  background-color: inherit;
+  cursor: pointer;
+  margin-left: 10px;
+  width: 15px;
+  height: 15px;
+}
+
+.tab label{
+  display: inline-block;
+  margin: 20px 5px;
+}
+
+/*
+  style tabcontents
+*/
+
+#tabcontents-box {
+  display: block;
+  float: left;
+  margin-top: 3rem;
+  margin-left: 1.5rem;
+  width: 35rem;
+}
+
+.tabcontent {
+  display: none;
+}
+
+.tabcontent.active {
+  display: block;
+  margin: 0;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+}
+
+.tabcontent h1 {
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.tabcontent label {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 17px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+#variant-tab label {
+  margin-top: 15px;
+  font-weight: normal;
+}
+
+input[type=text]{
+  padding: 10px 20px;
+  width: 100%;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 20px;
+}
+
+select{
+  padding: 10px 20px;
+  width: 100%;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input[type=submit] {
+  width: 35rem;
+  background-color:#00356B;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+
+input[type=submit]:hover {
+  background-color: royalblue;
+}
+
+.tabcontent option{
+    font-size: 14px;
+}
+
+
+.twitter-typeahead {
+  width: 100%;
+}
+
+.tt-menu {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 7px 15px;
+  margin: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.tt-dataset{
+  display: block;
+  font-weight: normal;
+  line-height: 40px;
+}
+
+.tt-hint {
+  color: gray;
+}
+
+.tt-suggestion{
+  display: block;
+  padding-left: 5px;
+}
+
+.tt-suggestion:hover,
+.tt-suggestion:focus,
+.tt-suggestion.tt-cursor {
+  background-color: gainsboro;
+} 
+
+.selected-phenotype {
+  display: inline-block;
+  background-color: lightblue;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  width: 400px;
+}
+
+.delete-button {
+  width: 80px;
+  padding: 10px 20px;
+  margin-left: 1px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: #00356B90;
+  border: none;
+  color: white;
+  font: inherit;
+}
+
+.delete-button:hover{
+  background-color: lightblue;
+  color: #00356B;
+}
+
+#duplication-error {
+  margin: 10px 0;
+  color: red;
+}
