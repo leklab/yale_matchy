@@ -7,6 +7,7 @@ def test_request(request_json):
 
 
 	if res.ok:
+		print("Response JSON")
 		print res.json()
 
 
@@ -25,10 +26,13 @@ contact_details = {
 
 print("Test 1 - Gene search: EFTUD2")
 test_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": gene, "type": variant_type}]}
-#print(test_json)
+print("Request JSON")
+print(test_json)
 test_request(test_json)
 print("")
 
 print("Test 2 - Gene search: LAMA1")
 test_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": {"id": "LAMA1"}}]}
+print("Request JSON")
+print(test_json)
 test_request(test_json)
