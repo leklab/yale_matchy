@@ -80,17 +80,18 @@ def mySubmissions():
 @app.route('/match', methods=['GET', 'POST'])
 def api_response():
    	content = request.json
-   	print content['genomicFeatures'][0]
+   	#print content['genomicFeatures'][0]
 
-   	search_matchy(content)
+   	results = search_matchy(content)
+   	
 
-   	return jsonify({"uuid":"ok"})
+   	return jsonify({"results": results})
 
 
 def search_matchy(request_json):
 
 	test_json = request_json['genomicFeatures'][0]
-	print(test_json['gene']['id'])
+	#print(test_json['gene']['id'])
 
 	geneENSG = geneDic[test_json['gene']['id']]
 
@@ -102,11 +103,29 @@ def search_matchy(request_json):
     	}
     )
 
+  	#print(res)
+
+  	results = []
+
   	for hit in res['hits']['hits']:
-  		print(hit['_source']['doc']['id'])
-  		
-  		for d in hit['_source']['doc']['disorders']:
-  			print(d['label'])
+
+  		doc = hit['_source']['doc']
+  		#print(doc['genomicFeatures'])
+
+  		#print(doc['features'])
+  		#print(doc['id'])
+  		#print(doc['contact'])
+  		matchy_score = 1.0
+
+  		results.append({"score": {"patient": matchy_score}, "patient": {"id": doc['id'], "contact": doc['contact']}})
+
+
+  		#for d in doc['disorders']:
+  			#print(d['label'])
+
+  	print(results)
+
+  	return results
 
   	#print(res)
 
