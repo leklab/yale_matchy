@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  
+  <head>
+    <meta charset="utf-8">
+    <title>Frequently Asked Questions</title>
+    <link href="../static/styles/home-style.css" rel="stylesheet">
+    <link href="../static/styles/about.css" rel="stylesheet">
+    <script src="../static/scripts/main.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+  </head>
+
+  <body>
+
+    <div id="no-footer">
+    
+    <!--navigation bar-->
+    <div class="navbar">
+      <img src="../static/images/google2.jpg" alt="logo">
+      <a href="/home">Home</a>      <a href="/about">About</a>
+      <a href="/publications">Publications</a>
+      <a href="/statistics">Statistics</a>
+      <a href="/contact-us">Contact Us</a>
+      <div class="dropdown">
+        <button class="dropbtn">Help
+          <i class="fa fa-caret-down"></i>
+        </button>
+          <div class="dropdown-content">
+              <a href="/help/eula">EULA</a>
+              <a href="/help/faq">FAQ</a>
+              <a href="/help/submission-help">Submission Help</a>
+              <a href="/help/features-table">Features Table</a>
+              <a href="/help/matchy-api">Matchy API</a>
+              <a href="/help/mme-api">MatchMaker Exchange API</a>
+              <a href="/help/external-data-sources">External Data Sources</a>
+          </div>
+        </div> 
+      <div class="dropdown">
+        <button id="account-name" class="dropbtn">Account
+          <i class="fa fa-caret-down"></i>
+        </button>
+          <div class="dropdown-content">
+              <a id="sign-in-link" href="#">Sign in</a>
+          </div>
+        </div> 
+
+
+
+      </div>
+
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+
+      <script>
+        var auth2; // The Sign-In object.
+        var googleUser; // The current user.
+
+        var authorizeButton = document.getElementById('authorize-button');
+        var signoutButton = document.getElementById('signout-button');
+        var signInLink = document.getElementById('sign-in-link');
+
+
+        /**
+         * Calls startAuth after Sign in V2 finishes setting up.
+         */
+        var appStart = function() {
+          console.log('in here')
+          gapi.load('auth2', initSigninV2);
+        };
+
+
+        /**
+         * Initializes Signin v2 and sets up listeners.
+         */
+        var initSigninV2 = function() {
+          auth2 = gapi.auth2.init({
+              client_id: '443149971299-a4ube422g2jmp838t2vtq33ofmh3m9rr.apps.googleusercontent.com',
+              scope: 'profile'
+          });
+
+          authorizeButton.onclick = handleAuthClick;
+          signoutButton.onclick = handleSignoutClick;
+
+
+          auth2.isSignedIn.listen(updateSigninStatus); 
+          
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get()); 
+
+          // Listen for sign-in state changes.
+          //auth2.isSignedIn.listen(signinChanged);
+          // Listen for changes to current user.
+          auth2.currentUser.listen(userChanged);
+
+          // Sign in the user if they are currently signed in.
+          //if (auth2.isSignedIn.get() == true) {
+          //  auth2.signIn();
+          //}
+
+          // Start with the current live values.
+          //refreshValues();
+        };
+
+
+        function handleAuthClick(event) {
+          gapi.auth2.getAuthInstance().signIn();
+        }
+        function handleSignoutClick(event) {
+          gapi.auth2.getAuthInstance().signOut();
+        }
+
+        function updateSigninStatus(isSignedIn) {
+          console.log('Signin state changed to ', isSignedIn);
+
+          if (isSignedIn) {
+            authorizeButton.style.display = 'none';
+            signoutButton.style.display = 'block';
+
+            document.getElementById('sign-in-link').innerText = "Sign Out";
+            signInLink.onclick = handleSignoutClick;
+          
+          } else {
+            authorizeButton.style.display = 'block';
+            signoutButton.style.display = 'none';
+            document.getElementById('content').innerText = "";
+
+
+            document.getElementById('sign-in-link').innerText = "Sign In";
+            document.getElementById('account-name').innerText = "Account";
+            signInLink.onclick = handleAuthClick;
+          }
+        }
+
+        /**
+         * Listener method for sign-out live value.
+         *
+         * @param {boolean} val the updated signed out state.
+         */
+        var signinChanged = function (val) {
+          console.log('Signin state changed to ', val);
+          //document.getElementById('signed-in-cell').innerText = val;
+        };
+
+
+        /**
+         * Listener method for when the user changes.
+         *
+         * @param {GoogleUser} user the updated user.
+         */
+        var userChanged = function (user) {
+          console.log('User now: ', user['w3']);
+          //document.getElementById('content').innerText = JSON.stringify(user['w3'], undefined, 2);
+          document.getElementById('content').innerText = user['w3']['ig'];
+          document.getElementById('account-name').innerText = user['w3']['ig'];
+
+          //googleUser = user;
+          //updateGoogleUser();
+          //document.getElementById('curr-user-cell').innerText = JSON.stringify(user, undefined, 2);
+        };
+
+
+        /**
+         * Updates the properties in the Google User table using the current user.
+         */
+        var updateGoogleUser = function () {
+          if (googleUser) {
+            //document.getElementById('user-id').innerText = googleUser.getId();
+            //document.getElementById('user-scopes').innerText = googleUser.getGrantedScopes();
+            //document.getElementById('auth-response').innerText = JSON.stringify(googleUser.getAuthResponse(), undefined, 2);
+          } else {
+            //document.getElementById('user-id').innerText = '--';
+            //document.getElementById('user-scopes').innerText = '--';
+            //document.getElementById('auth-response').innerText = '--';
+          }
+        };
+
+
+        /**
+         * Retrieves the current user and signed in states from the GoogleAuth
+         * object.
+         */
+        var refreshValues = function() {
+          if (auth2){
+            console.log('Refreshing values...');
+
+            googleUser = auth2.currentUser.get();
+
+            //document.getElementById('curr-user-cell').innerText = JSON.stringify(googleUser, undefined, 2);
+            //document.getElementById('signed-in-cell').innerText = auth2.isSignedIn.get();
+            updateGoogleUser();
+          }
+        }
+    </script>
+    <script>appStart()</script>
+
+    <p id="content">stuff</p>
+
+    </div>
+
+    <footer>
+      <p>MatchY insert footer</p>
+    </footer>
+
+
+  </body>
+</html>

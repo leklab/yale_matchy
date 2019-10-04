@@ -19,15 +19,20 @@ for line in genes:
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-   return render_template('login_test.html')
+   return render_template('index.html')
 
-@app.route("/home")
-def home():
-   return render_template("home.html")
+@app.route("/submission")
+def submission():
+   return render_template("submission.html")
 
 @app.route("/about")
 def about():
    return render_template("about.html")
+
+
+@app.route("/home")
+def home():
+   return render_template("home.html")
 
 @app.route("/publications")
 def publications():
@@ -44,6 +49,10 @@ def contactUs():
 @app.route("/account")
 def account():
    return render_template("account.html")
+
+@app.route("/google")
+def google_signin():
+   return render_template("google_signin.html")
 
 @app.route("/help/eula")
 def eula():

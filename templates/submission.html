@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <link href="../static/styles/home-style.css" rel="stylesheet">
+  <link href="../static/styles/tab.css" rel="stylesheet">
+  <script src="../static/scripts/main.js" async></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+  <script src="../static/scripts/autocomplete.js" async></script>
+  <script src="../static/scripts/autocomplete_phenotype.js" async></script>
+
+  <script src="https://apis.google.com/js/platform.js"></script>
+  <script src="../static/scripts/account.js" async defer></script>
+
+</head>
+
+<body>
+<div id="no-footer">
+
+<div class="navbar">
+    <img src="../static/images/google2.jpg" alt="logo">
+    <a href="/">Home</a> 
+
+    <div class="dropdown" id="submissions-div" style="display: none;">
+        <button id="submissions-menu" class="dropbtn" style="display: none;">Submissions
+        <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+            <a id="submissions-new" style="display: none;" href="/submission">New</a>
+            <a id="submissions-history" style="display: none;" href="#">History</a>
+        </div>
+    </div> 
+
+    <a href="/about">About</a>
+
+    <div class="dropdown">
+        <button id="account-name" class="dropbtn">Account
+        <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+            <a id="account-profile" style="display: none;" href="#">Profile</a>
+            <a id="sign-in-link" href="#">Sign in</a>
+        </div>
+    </div> 
+
+</div>
+
+      
+<!-- Tabs -->
+<div class="tab">
+  <input type="checkbox" checked disabled class="tablinks active"><label>Gene</label><br>
+  <input type="checkbox" id="inheritance-pattern-link" onclick="openTab('inheritance-pattern-tab')"><label>Inheritance Pattern</label><br>
+  <input type="checkbox" id="variant-type-link" onclick="openTab('variant-type-tab')"><label>Variant Type</label><br>
+  <input type="checkbox" id="variant-link" onclick="openTab('variant-tab')"><label>Variant</label><br>
+  <input type="checkbox" id="phenotype-link" onclick="openTab('phenotype-tab')"><label>Phenotype</label><br>
+</div>
+
+<!-- Tab content -->
+<div id="tabcontents-box">
+  <form id="search-form" action="/search-result" method="POST">        
+    <div id="gene-tab" class="tabcontent active">
+      <label for="gene">Gene:</label>
+      <input type="text" id="gene" name="gene">
+    </div>
+
+    <div id="inheritance-pattern-tab" class="tabcontent">
+      <label for="inheritance-pattern">Inheritance pattern:</label>
+      <select id="inheritance-pattern" name="inheritance-pattern">
+        <option>Select optional inheritance pattern</option>
+        <option>HP:0000006 - Autosomal dominant inheritance</option>
+        <option>HP:0000007 - Autosomal recessive inheritance</option>
+        <option>HP:0001472 - Familial predisposition</option>
+        <option>HP:0001426 - Multifactorial inheritance</option>
+        <option>HP:0001427 - Mitochondrial inheritance</option>
+        <option>HP:0001425 - Heterogeneous</option>
+        <option>HP:0001428 - Somatic mutation</option>
+        <option>HP:0001466 - Contiguous gene syndrome</option>
+        <option>HP:0003745 - Sporadic</option>
+        <option>HP:0003743 - Genetic anticipation</option>
+        <option>HP:0010985 - Gonosomal inheritance</option>
+      </select>
+    </div>
+
+    <div id="variant-type-tab" class="tabcontent">
+        <label for="variant-type">Variant type:</label>
+        <select id="variant-type" name="variant-type">
+          <option>Select optional variant type</option>
+          <optgroup label="Loss of function:">
+            <option>Stop gain</option>
+            <option>Frameshift</option>
+            <option>Splicing</option>
+          </optgroup>
+          <option>Missense</option>
+          <option>Other</option>
+          <option>All</option>
+        </select>
+    </div>
+
+    <div id="variant-tab" class="tabcontent">
+        <h1>Variant</h1>
+        <label for="chr">Chromosome:</label>
+        <select id="chr" name="chr">
+          <option>Select chromosome</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+          <option>14</option>
+          <option>15</option>
+          <option>16</option>
+          <option>17</option>
+          <option>18</option>
+          <option>19</option>
+          <option>20</option>
+          <option>21</option>
+          <option>22</option>
+          <option>X</option>
+          <option>Y</option>
+        </select>
+        <label for="position">Position:</label>
+        <input type="text" id="position" name="position">
+        <label for="ref">Reference Bases:</label>
+        <input type="text" id="ref" name="ref">
+        <label for="alt">Alternate Bases:</label>
+        <input type="text" id="alt" name="alt">
+    </div>
+                  
+    <div id="phenotype-tab" class="tabcontent">
+      <label for="phenotype">Phenotype:</label>
+      <input type="text" id="phenotype" onkeypress="addPhenotype(event)">
+    </div>
+          
+    <input type="submit" value="Search" onclick="appendPhenotype()">
+  </form>
+
+</div>
+
+<div id="clear"></div>
+</div>
+    
+<footer>
+  <p>MatchY insert footer</p>
+</footer>
+    
+
+</body>
+</html>
