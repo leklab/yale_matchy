@@ -4,6 +4,7 @@ app = Flask(__name__)
 import json
 import pprint
 import requests
+import math
 
 #import elasticsearch and connect to clutter
 from elasticsearch import Elasticsearch
@@ -172,6 +173,18 @@ def gene_only_match(gene_name):
     ensembl_gene_id = gene_details['data']['gene']['gene_id']
     canonical_transcript_id = gene_details['data']['gene']['canonical_transcript_id']
 
+    print(canonical_transcript_id)
+    constraint_details = get_gene_constraint(canonical_transcript_id)
+    gene_constraint_pLI = constraint_details['data']['transcript']['gnomad_constraint']['pLI']
+
+    #print("pLI: %lf" % (gene_constraint_pLI))
+    print(gene_constraint_pLI)
+
+    #At the moment genotype and phenotype are equal weighting (i.e. 0.5 each)
+    #Gene only matches are scored based on pLI
+    #TO DO: If inheritance model is specified use something different for recessive
+    matchy_score = round(0.5*gene_constraint_pLI,3)
+
     results = []
 
 
@@ -184,9 +197,7 @@ def gene_only_match(gene_name):
     )
 
     for hit in res['hits']['hits']:
-
         doc = hit['_source']['doc']
-        matchy_score = 1.0
 
         results.append({"score": {"patient": matchy_score}, "patient": {"id": doc['id'], "contact": doc['contact']}})
 
