@@ -3,9 +3,61 @@ app = Flask(__name__)
 
 import json
 import pprint
+import requests
+
 #import elasticsearch and connect to clutter
 from elasticsearch import Elasticsearch
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+
+
+def get_gene_details(gene_name):
+
+  query = """
+  {
+    gene(gene_name: "%s") {
+      gene_id
+      gene_name
+      canonical_transcript_id
+    }     
+  }""" % (gene_name)
+
+  #print(query)
+
+  res = requests.post('http://gnomad.broadinstitute.org/api', json={'query': query})
+
+  if res.ok:
+    #print res.json()
+    return res.json()
+
+  else:
+    return({'data': 'error'}) 
+
+
+def get_gene_constraint(transcript_id):
+
+  query = """
+  {
+    transcript(transcript_id: "%s") {
+      gnomad_constraint{
+        pLI
+      }
+
+    }     
+  }""" % (transcript_id)
+
+  print(query)
+
+  res = requests.post('http://gnomad.broadinstitute.org/api', json={'query': query})
+
+  if res.ok:
+    print res.json()
+    return res.json()
+
+  else:
+    return({'data': 'error'}) 
+
+
+
 
 
 #create dictionary with HGNC names as keys and ENSG names as values
@@ -99,44 +151,46 @@ def api_response():
 
 def search_matchy(request_json):
 
-	test_json = request_json['genomicFeatures'][0]
-	#print(test_json['gene']['id'])
+    test_json = request_json['genomicFeatures'][0]
+    #print(test_json['gene']['id'])
 
-	geneENSG = geneDic[test_json['gene']['id']]
+    results = gene_only_match(test_json['gene']['id'])
+    print(results)
 
-  	res = es.search(index="patients", 
-  		body={
-			"query":{
-		    	"match":{ "gene": geneENSG } 
-    		}
-    	}
+    return results
+
+  	#print(res)
+
+
+def gene_only_match(gene_name):
+
+    #geneENSG = geneDic[gene_name]
+
+    gene_details = get_gene_details(gene_name)
+    #print("geneENSG: %s gene_details: %s" % (geneENSG, gene_details['data']['gene']['gene_id']))
+
+    ensembl_gene_id = gene_details['data']['gene']['gene_id']
+    canonical_transcript_id = gene_details['data']['gene']['canonical_transcript_id']
+
+    results = []
+
+
+    res = es.search(index="patients", 
+    body={
+    "query":{
+        "match":{ "gene": ensembl_gene_id } 
+      }
+    }
     )
 
-  	#print(res)
+    for hit in res['hits']['hits']:
 
-  	results = []
+        doc = hit['_source']['doc']
+        matchy_score = 1.0
 
-  	for hit in res['hits']['hits']:
+        results.append({"score": {"patient": matchy_score}, "patient": {"id": doc['id'], "contact": doc['contact']}})
 
-  		doc = hit['_source']['doc']
-  		#print(doc['genomicFeatures'])
-
-  		#print(doc['features'])
-  		#print(doc['id'])
-  		#print(doc['contact'])
-  		matchy_score = 1.0
-
-  		results.append({"score": {"patient": matchy_score}, "patient": {"id": doc['id'], "contact": doc['contact']}})
-
-
-  		#for d in doc['disorders']:
-  			#print(d['label'])
-
-  	print(results)
-
-  	return results
-
-  	#print(res)
+    return results
 
 
 @app.route('/search-result', methods=['GET', 'POST'])
