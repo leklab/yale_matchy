@@ -8,6 +8,10 @@ import pprint
 import requests
 import math
 
+
+from utils.ontology import open_ontology
+from utils.load_files import load_participants_hpo_terms
+
 #import elasticsearch and connect to clutter
 from elasticsearch import Elasticsearch
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
@@ -123,6 +127,78 @@ for line in genes:
 	geneDic[text[0]] = text[1]
 
 
+
+graph, alt_ids, obsolete = open_ontology()
+hpo_by_proband = load_participants_hpo_terms('test_phenotypes_per_subject.json',alt_ids, obsolete)
+graph.tally_hpo_terms(hpo_by_proband)
+
+
+def get_resnik_score(hpo_graph, proband_1, proband_2):
+    """ Calculate the similarity in HPO terms between terms for two probands.
+    
+    This runs through the pairs of HPO terms from the two probands and finds
+    the information content for the most informative common ancestor for each
+    pair. We return the largest of these IC scores, known as the maxIC.
+    
+    Reference:
+        Resnik, J Artif Intell Res (1999), 11:95-130.
+    
+    Args:
+        hpo_graph: ICSimilarity object for the HPO term graph, with
+            information on how many times each term has been used across all
+            probands.
+        proband_1: list of HPO terms for one proband
+        proband_2: list of HPO terms for the other proband
+    
+    Returns:
+        A score for how similar the terms are between the two probands.
+    """
+    
+    ic = []
+    for term_1 in proband_1:
+        for term_2 in proband_2:
+            #print("term1: %s term2: %s most_informative: %f" %(term_1, term_2, hpo_graph.get_most_informative_ic(term_1, term_2)))            
+            ic.append(hpo_graph.get_most_informative_ic(term_1, term_2))
+    
+    return max(ic)
+
+
+def get_ERIC_score(hpo_graph, proband_1, proband_2):
+    """ calculate the similarity of HPO terms across different individuals.
+
+    Reference: https://www.nature.com/articles/s41436-019-0439-8
+    Li et al., Genetics in Medicine (2019)
+
+    Args:
+        hpo_graph: ICSimilarity object for the HPO term graph, with
+            information on how many times each term has been used across all
+            probands.
+        proband_1: list of HPO terms for one proband
+        proband_2: list of HPO terms for the other proband 
+
+    """
+
+    scores = []
+    for term_1 in proband_1:
+        for term_2 in proband_2:
+            a = hpo_graph.calculate_information_content(term_1)
+            b = hpo_graph.calculate_information_content(term_2)
+            common = 2 * hpo_graph.get_most_informative_ic(term_1, term_2)
+            minimum = min(a,b)
+
+            #print("term1: %s term2: %s a: %f b: %f common: %f" %(term_1, term_2, a, b, common))
+
+            if minimum >= common:
+                scores.append(0)
+            else:
+                #print("In here!")
+                scores.append(common-minimum)
+
+    return(max(scores))
+
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
    return render_template('index.html')
@@ -224,7 +300,20 @@ def search_matchy(request_json):
 
 
 
-    results = genotype_match(test_json['gene']['id'],variant_str)
+    phenotypes = []
+    #print(request_json)
+
+
+    if 'features' in request_json:
+      for f in request_json['features']:
+        if 'id' in f:
+          phenotypes.append(f['id'])
+
+
+    print(phenotypes)
+
+
+    results = genotype_match(test_json['gene']['id'],variant_str,phenotypes)
     print(results)
 
     return results
@@ -232,7 +321,57 @@ def search_matchy(request_json):
   	#print(res)
 
 
-def genotype_match(gene_name, variant):
+def get_variant_score(genomic_features, ensembl_gene_id, variant):
+
+  variant_scores = [0.0]
+
+  for g in genomic_features:
+      print(g['gene']['id'])
+      #{u'assembly': u'GRCh37', u'start': 42929130, u'alternateBases': u'A', u'referenceName': u'17', u'end': 42929131, u'referenceBases': u'G'}
+      if g['gene']['id'] == ensembl_gene_id and g['variant']:
+          #print(g['variant'])
+          chrom = g['variant']['referenceName'] if 'referenceName' in g['variant'] else ""
+          
+          #start and end coordinates are whacky but +1 works for snps for now    
+          chrom_start = str(g['variant']['start']+1) if 'start' in g['variant'] else ""
+          
+          chrom_ref = g['variant']['referenceBases'] if 'referenceBases' in g['variant'] else ""
+          chrom_alt = g['variant']['alternateBases'] if 'alternateBases' in g['variant'] else ""
+
+          variant_str = "%s-%s-%s-%s" % (chrom,chrom_start,chrom_ref,chrom_alt)
+          print(variant_str)
+
+          if variant_str == variant:
+              gnomad_af = get_gnomad_freq(variant_str)
+              print("Variant matches: %s gnomAD freq: %.3e" % (variant_str,gnomad_af))
+              variant_scores.append(1-gnomad_af)                    
+
+  return max(variant_scores)
+
+
+def get_phenotype_score(features, phenotypes):
+
+  db_entry_phenotypes = []
+
+  for f in features:
+    if 'id' in f:
+      db_entry_phenotypes.append(f['id'])
+
+
+  #print(db_entry_phenotypes)
+  #print(phenotypes)
+
+  score = get_ERIC_score(graph, db_entry_phenotypes,phenotypes)
+  print("Phenotype score: %f" % (score/4))
+
+  return score/4
+
+  #get_ERIC_score()
+
+
+
+
+def genotype_match(gene_name, variant, phenotypes):
 
     #geneENSG = geneDic[gene_name]
 
@@ -269,39 +408,30 @@ def genotype_match(gene_name, variant):
         doc = hit['_source']['doc']
         #print(doc)
 
-        variant_scores = [0.0]
 
-        for g in doc['genomicFeatures']:
-            print(g['gene']['id'])
-            #{u'assembly': u'GRCh37', u'start': 42929130, u'alternateBases': u'A', u'referenceName': u'17', u'end': 42929131, u'referenceBases': u'G'}
-            if g['gene']['id'] == ensembl_gene_id and g['variant']:
-                #print(g['variant'])
-                chrom = g['variant']['referenceName'] if 'referenceName' in g['variant'] else ""
-                
-                #start and end coordinates are whacky but +1 works for snps for now    
-                chrom_start = str(g['variant']['start']+1) if 'start' in g['variant'] else ""
-                
-                chrom_ref = g['variant']['referenceBases'] if 'referenceBases' in g['variant'] else ""
-                chrom_alt = g['variant']['alternateBases'] if 'alternateBases' in g['variant'] else ""
+        matchy_score = 0.0
 
-                variant_str = "%s-%s-%s-%s" % (chrom,chrom_start,chrom_ref,chrom_alt)
-                print(variant_str)
-
-                if variant_str == variant:
-                    gnomad_af = get_gnomad_freq(variant_str)
-                    print("Variant matches: %s gnomAD freq: %.3e" % (variant_str,gnomad_af))
-                    variant_scores.append(1-gnomad_af)                    
-
-
-
-
-        max_variant_score = max(variant_scores)
-        print("gene_score: %f variant_score: %f" % (gene_score,max_variant_score))
-
-        if max_variant_score > 0:
-            matchy_score = round(0.5*(max_variant_score),3)
+        if 'genomicFeatures' in doc:
+          variant_score = get_variant_score(doc['genomicFeatures'],ensembl_gene_id, variant)
         else:
-            matchy_score = round(0.5*(gene_score),3)
+          variant_score = 0.0    
+
+  
+        print("gene_score: %f variant_score: %f" % (gene_score,variant_score))
+
+        if variant_score > 0:
+            matchy_score += 0.5*variant_score
+        else:
+            matchy_score += 0.5*gene_score
+
+        #If there are more than one gene. Then gene does not strictly have to match the query gene
+        #There is no direct mapping between gene and phenotype
+        if 'features' in doc:
+          phenotype_score = get_phenotype_score(doc['features'],phenotypes)
+        else:
+          phenotype_score = 0.0
+
+        matchy_score = round((matchy_score+0.5*phenotype_score),3)
 
         results.append({"score": {"patient": matchy_score}, "patient": {"id": doc['id'], "contact": doc['contact']}})
 

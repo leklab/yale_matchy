@@ -1,3 +1,0 @@
-[submodule "hpo_similarity"]
-	path = hpo_similarity
-	url = https://github.com/leklab/hpo_similarity.git
