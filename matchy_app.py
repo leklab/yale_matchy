@@ -154,7 +154,7 @@ def get_resnik_score(hpo_graph, proband_1, proband_2):
         A score for how similar the terms are between the two probands.
     """
     
-    ic = []
+    ic = [0.0]
     for term_1 in proband_1:
         for term_2 in proband_2:
             #print("term1: %s term2: %s most_informative: %f" %(term_1, term_2, hpo_graph.get_most_informative_ic(term_1, term_2)))            
@@ -178,7 +178,7 @@ def get_ERIC_score(hpo_graph, proband_1, proband_2):
 
     """
 
-    scores = []
+    scores = [0.0]
     for term_1 in proband_1:
         for term_2 in proband_2:
             a = hpo_graph.calculate_information_content(term_1)
