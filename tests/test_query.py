@@ -2,7 +2,7 @@ import requests
 
 
 def test_request(request_json):
-	res = requests.post('http://localhost:5000/match', json=test_json)
+	res = requests.post('http://yale-matchy.org:5000/match', json=test_json)
 
 	if res.ok:
 		print res.json()
