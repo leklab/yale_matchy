@@ -344,7 +344,18 @@ def get_variant_score(genomic_features, ensembl_gene_id, variant):
           if variant_str == variant:
               gnomad_af = get_gnomad_freq(variant_str)
               print("Variant matches: %s gnomAD freq: %.3e" % (variant_str,gnomad_af))
-              variant_scores.append(1-gnomad_af)                    
+
+
+              #gnomAD has 141,456 samples
+              gnomAD_singleton_af = 1/(2*141456)              
+              max_variant_score = math.log(gnomAD_singleton_af)
+
+              if(gnomad_af < gnomAD_singleton_af):
+                variant_scores.append(1.0)
+              else:
+                variant_scores.append(math.log(gnomad_af)/max_variant_score)
+
+
 
   return max(variant_scores)
 
@@ -362,9 +373,13 @@ def get_phenotype_score(features, phenotypes):
   #print(phenotypes)
 
   score = get_ERIC_score(graph, db_entry_phenotypes,phenotypes)
-  print("Phenotype score: %f" % (score/4))
+  max_phenotype_score = -1*math.log(1/40)
 
-  return score/4
+
+  print("Phenotype score: %f" % (score/max_phenotype_score))
+
+
+  return score/max_phenotype_score
 
   #get_ERIC_score()
 
