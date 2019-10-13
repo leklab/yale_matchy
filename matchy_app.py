@@ -122,9 +122,9 @@ def get_gnomad_freq(variant_id):
 genes = open("mart_export_ens_hgnc_1to1only.txt","r").readlines()
 geneDic = {}
 for line in genes:
-	line = line.replace("\n","")
-	text = line.split("\t")
-	geneDic[text[0]] = text[1]
+    line = line.replace("\n","")
+    text = line.split("\t")
+    geneDic[text[0]] = text[1]
 
 
 
@@ -270,13 +270,13 @@ def mySubmissions():
 
 @app.route('/match', methods=['GET', 'POST'])
 def api_response():
-   	content = request.json
-   	#print content['genomicFeatures'][0]
+    content = request.json
+    #print content['genomicFeatures'][0]
 
-   	results = search_matchy(content)
-   	
+    results = search_matchy(content)
+    
 
-   	return jsonify({"results": results})
+    return jsonify({"results": results})
 
 
 def search_matchy(request_json):
@@ -318,7 +318,7 @@ def search_matchy(request_json):
 
     return results
 
-  	#print(res)
+    #print(res)
 
 
 def get_variant_score(genomic_features, ensembl_gene_id, variant):
@@ -372,7 +372,12 @@ def get_phenotype_score(features, phenotypes):
   #print(db_entry_phenotypes)
   #print(phenotypes)
 
+  #Put in new phenotype entries. Required as will get zero count if these are the only phenotypes
+  graph.tally_hpo_terms({"test_patient": phenotypes})
+  
   score = get_ERIC_score(graph, db_entry_phenotypes,phenotypes)
+
+  #The 40 needs to be removed and frequency (i.e. total proband count) taken from graph
   max_phenotype_score = -1*math.log(1/40)
 
 
@@ -453,36 +458,118 @@ def genotype_match(gene_name, variant, phenotypes):
     return results
 
 
+def make_features_json(phenotype_list):
+
+  features_json = []
+
+  if phenotype_list == '':
+    return features_json
+
+  else:
+    for pheno in phenotype_list.split(","):
+      x =pheno.split()
+      features_json.append({"id": x[0]})
+      #print(x[0])
+    return features_json
+
+def make_variant_json(chrom, position, ref, alt):
+  variant_json = {}
+
+  if chrom == 'Select chromosome':
+    return variant_json
+
+  else:
+    variant_json = {"alternateBases": alt,
+      "assembly": "GRCh37",
+      "end": int(position),
+      "referenceBases": ref,
+      "referenceName": chrom,
+      "start": int(position) - 1
+    }
+
+    return variant_json
+
+
+
 @app.route('/search-result', methods=['GET', 'POST'])
 def searchResult():
-	geneHGNC = request.form['gene']
-	geneENSG = geneDic[geneHGNC]
-	inheritancePattern=request.form['inheritance-pattern']
-	variantType=request.form['variant-type']
-	chr=request.form['chr']
-	position=request.form['position']
-	ref=request.form['ref']
-	alt=request.form['alt']
-	phenotype=request.form['phenotype']
 
+    contact_details = {
+    "name": "Monkol Lek",
+    "institution": "Yale University",
+    "href": "",
+    "email": "monkol.lek@yale.edu",
+    "roles": ["researcher"]     
+    }
+
+
+    geneHGNC = request.form['gene']
+    inheritancePattern=request.form['inheritance-pattern']
+    variantType=request.form['variant-type']
+
+    chrom=request.form['chr']
+    position=request.form['position']
+    ref=request.form['ref']
+    alt=request.form['alt']
+
+    variant_json = make_variant_json(chrom,position,ref,alt)
+    print("Variant: %s" % variant_json)
+
+    phenotype=request.form['phenotype']
+
+    #if phenotype != '':
+      #print("Phenotype: %s" % phenotype)
+
+
+    features_json = make_features_json(phenotype)
+    print("Phenotype: %s" % features_json)
+
+    if features_json and variant_json:
+      req_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": {"id": geneHGNC}, "variant": variant_json}], "features": features_json}
+
+    elif features_json:
+      req_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": {"id": geneHGNC}}], "features": features_json}
+
+    elif variant_json:
+      req_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": {"id": geneHGNC}, "variant": variant_json}]}
+
+    else:
+      req_json = {"patient": {"id": "test_patient", "contact": contact_details}, "genomicFeatures": [{"gene": {"id": geneHGNC}}]}
+
+    print(req_json)
+
+    res = requests.post('http://yale-matchy.org:5000/match', json=req_json)
+    if res.ok:
+        print res.json()
+
+    results = res.json()
+
+    #return render_template('search-result.html', results=res.json)
+
+
+    return render_template('search-result.html', gene=geneHGNC, inheritancePattern=inheritancePattern, variantType=variantType, chr=chrom, position=position, alt=alt, ref=ref, phenotype=phenotype, res=results['results'])
+
+
+    '''
         res = es.search(index="patients", body={
-#		"query":{
-#		    "match":{ "gene":geneENSG} 
+#       "query":{
+#           "match":{ "gene":geneENSG} 
  #               }
-		"query": {
-			"dis_max": {
-				"queries": [
-					{"match":{"gene":geneENSG}},
-					{"match":{"phenotype":phenotype}}, 
-					{"match":{"variant-type":variantType}}
-				],
-				"tie_breaker": 1
-				} #,
-		#"sort" : ["_score"]
-		}
-	}, size=100)
-	
-	return render_template('search-result.html', gene=geneHGNC, inheritancePattern=inheritancePattern, variantType=variantType, chr=chr, position=position, alt=alt, ref=ref, phenotype=phenotype,res=res)
+        "query": {
+            "dis_max": {
+                "queries": [
+                    {"match":{"gene":geneENSG}},
+                    {"match":{"phenotype":phenotype}}, 
+                    {"match":{"variant-type":variantType}}
+                ],
+                "tie_breaker": 1
+                } #,
+        #"sort" : ["_score"]
+        }
+    }, size=100)
+    
+    return render_template('search-result.html', gene=geneHGNC, inheritancePattern=inheritancePattern, variantType=variantType, chr=chr, position=position, alt=alt, ref=ref, phenotype=phenotype,res=res)
+    '''
 
 if __name__ == '__main__':
    app.run(debug = True, host='0.0.0.0')
