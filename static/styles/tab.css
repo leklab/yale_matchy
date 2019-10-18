@@ -188,3 +188,12 @@ input[type=submit]:hover {
   margin: 10px 0;
   color: red;
 }
+
+
+p {
+  margin: 2rem 20rem;
+  font-size: 16px;
+  color: dimgray;
+  text-align: justify;
+}
+

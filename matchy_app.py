@@ -538,7 +538,7 @@ def searchResult():
 
     print(req_json)
 
-    res = requests.post('http://yale-matchy.org:5000/match', json=req_json)
+    res = requests.post('http://yale-matchy.org/match', json=req_json)
     if res.ok:
         print res.json()
 
@@ -572,5 +572,6 @@ def searchResult():
     '''
 
 if __name__ == '__main__':
+#   app.run(debug = True, host='0.0.0.0', port=80)
    app.run(debug = True, host='0.0.0.0')
 

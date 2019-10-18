@@ -1,7 +1,7 @@
 var phenotypes;
 
 jQuery.ajax({
-        url:'http://yale-matchy.org:5000/static/hpo_terms.txt', 
+        url:'http://yale-matchy.org/static/hpo_terms.txt', 
         success: function(data) {
             phenotypes = data.split("\n");
         }, 

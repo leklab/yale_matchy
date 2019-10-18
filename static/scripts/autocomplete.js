@@ -1,7 +1,7 @@
 var states;
 
 jQuery.ajax({
-        url:'http://yale-matchy.org:5000/static/hgnc_gene_names_sorted.txt', 
+        url:'http://yale-matchy.org/static/hgnc_gene_names_sorted.txt', 
         success: function(data) {
             states = data.split("\n");
         }, 

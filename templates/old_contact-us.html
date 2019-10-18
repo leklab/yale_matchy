@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  
+  <head>
+    <meta charset="utf-8">
+    <title>About</title>
+    <link href="../static/styles/home-style.css" rel="stylesheet">
+    <link href="../static/styles/about.css" rel="stylesheet">
+    <link href="../static/styles/contact-us.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div id="no-footer">
+    
+    <!--navigation bar-->
+    <div class="navbar">
+      <img src="../static/images/google2.jpg" alt="logo">
+      <a href="/home">Home</a>
+      <a href="/about">About</a>
+      <a href="/publications">Publications</a>
+      <a href="/statistics">Statistics</a>
+      <a href="/contact-us">Contact Us</a>
+      <div class="dropdown">
+        <button class="dropbtn">Help
+          <i class="fa fa-caret-down"></i>
+        </button>
+          <div class="dropdown-content">
+              <a href="/help/eula">EULA</a>
+              <a href="/help/faq">FAQ</a>
+              <a href="/help/submission-help">Submission Help</a>
+              <a href="/help/features-table">Features Table</a>
+              <a href="/help/genematcher-api">GeneMatcher API</a>
+              <a href="/help/mme-api">MatchMaker Exchange API</a>
+              <a href="/help/external-data-sources">External Data Sources</a>
+          </div>
+        </div> 
+        <div class="nav-right">
+            <a href="/my_submissions">My Submissions</a>
+            <a href="/account">My Account</a>
+            <a href="#">Log Out</a>
+        </div>
+      </div>
+
+    <h1>Contact Us</h1>
+    <div class="left-col">
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname">
+        <br>
+    
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname">
+        <br>  
+      
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone">
+        <br>
+
+        <label for="comment">Comment:</label>
+        <textarea id="comment" name="comment" row=10 column=80></textarea>
+    </div>
+
+    <div class="right-col">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email">
+        <br>
+
+        <label for="email2">Email (again):</label>
+        <input type="text" id="email2" name="email">
+        <br>
+        
+        <label for="sub-id">Submission ID:</label>
+        <input type="text" id="sub-id" name="sub-id">
+        <br>
+        <br>
+
+        
+        
+    </div>
+
+    <input type="submit" value="Submit Comment">
+
+    <div class="text-bottom">
+        <p>All fields are required except for the phone and submission ID in order to submit your comments.</p>
+        <p>Please enter your real email address if you would like a response from us.</p>
+    </div>
+
+    </div>
+    <div id="clear"></div>
+    <footer>
+      <p>MatchY insert footer</p>
+    </footer>
+
+
+  </body>
+</html>
